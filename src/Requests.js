@@ -1,4 +1,4 @@
-const key = '84772a3f377cb8a1fd8f03fadf99b457'
+const key = process.env.REACT_APP_IMDB_API_KEY
 
 
 const requests = {
