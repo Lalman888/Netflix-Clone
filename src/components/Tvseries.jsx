@@ -5,7 +5,7 @@ import { db } from "../firebase";
 import {arrayUnion,doc, updateDoc} from 'firebase/firestore'
 import movieTrailer from "movie-trailer";
 
-const Movie = ({ item ,trailerUrl,setTrailerUrl,setShowModal}) => {
+const Tvseries = ({ item,trailerUrl,setTrailerUrl }) => {
   const [like, setLike] = useState(false);
   const [saved, setSaved] = useState(false)
   const {user} = UserAuth();
@@ -16,19 +16,13 @@ const Movie = ({ item ,trailerUrl,setTrailerUrl,setShowModal}) => {
     if(trailerUrl){
       setTrailerUrl('');
     } else {
-      movieTrailer(item?.title || "")
+      movieTrailer(item?.original_name || item.name  || "")
       .then(url => {
-         const urlParams = new URLSearchParams(new URL(url).search);
-         setTrailerUrl(urlParams.get("v"));
-      }).catch(error => console.log(error))
+        const urlParams = new URLSearchParams(new URL(url).search);
+        setTrailerUrl(urlParams.get("v"));
+     }).catch(error => console.log(error))
     }
   }
-
-  const handleOpen = () => {
-    handleClick(item)
-    setShowModal(true)
-  }
-  // () => handleClick(item)
 
   const  saveShow = async () => {
     if(user?.email) {
@@ -37,7 +31,7 @@ const Movie = ({ item ,trailerUrl,setTrailerUrl,setShowModal}) => {
       await updateDoc(movieID, {
         savedShows: arrayUnion({
           id: item.id,
-          title: item.title,
+          title: item.original_name,
           img: item.backdrop_path,
         }),
       })
@@ -47,15 +41,15 @@ const Movie = ({ item ,trailerUrl,setTrailerUrl,setShowModal}) => {
   }
   return (
     <>
-      <div  className="w-[160px] sm:w-[200px] md:w-[240px] lg:w-[280px] inline-block cursor-pointer relative p-2">
+      <div onClick={() => handleClick(item)} className="w-[160px] sm:w-[200px] md:w-[240px] lg:w-[280px] inline-block cursor-pointer relative p-2">
         <img
           className="w-full h-auto block"
           src={`https://image.tmdb.org/t/p/w500/${item?.backdrop_path}`}
-          alt={item?.title}
+          alt={item?.original_name}
         />
         <div className="absolute top-0 left-0 w-full h-full hover:bg-black/80 opacity-0 hover:opacity-100 text-white">
-          <p onClick={handleOpen} className="white-space-normal text-xs md:text-sm font-bold flex justify-center items-center h-full text-center ">
-            {item?.title}
+          <p className="white-space-normal text-xs md:text-sm font-bold flex justify-center items-center h-full text-center ">
+            {item?.original_name}
           </p>
           <p onClick={saveShow}>
             {like ? (
@@ -66,9 +60,8 @@ const Movie = ({ item ,trailerUrl,setTrailerUrl,setShowModal}) => {
           </p>
         </div>
       </div>
-      
     </>
   );
 };
 
-export default Movie;
+export default Tvseries;
