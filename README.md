@@ -1,2 +1,2 @@
 
-A Netflix Clone App built using React js  Tailwind css
+A Netflix clone App built using React js  Tailwind css
